@@ -1,4 +1,4 @@
-import { HighlighterOptions } from "shiki";
+import { HighlighterOptions, ILanguageRegistration } from "shiki";
 import { readFile } from "fs/promises";
 import type { Plugin, LoadResult, PluginContext } from "rollup";
 
@@ -53,10 +53,11 @@ export type HandleContent = (params: {
   shikiOptions: HighlighterOptions;
   language: string;
   loadOptions: ViteLoadHookOptions;
+  customLanguage: undefined|ILanguageRegistration;
 }) => Promise<LoadResult>;
 
 export const basePlugin = (handleContent: HandleContent) => {
-  return function (options: SyntaxHighlightOptions | undefined): VitePlugin {
+  return function (options: SyntaxHighlightOptions | undefined,customLanguage: undefined|ILanguageRegistration): VitePlugin {
     const { mapExtension, ...shikiOptions } = {
       mapExtension: {
         ...defaultMapExtension,
@@ -124,6 +125,7 @@ export const basePlugin = (handleContent: HandleContent) => {
           shikiOptions,
           language,
           loadOptions,
+          customLanguage,
         });
       },
     };
